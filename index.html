@@ -71,11 +71,9 @@
     function displayData() {
       const output = document.getElementById('output');
       const eventTitle = document.getElementById('eventTitle');
-      const genderInfo = document.getElementById('genderInfo');
       output.innerHTML = ''; // Clear previous content
       eventTitle.textContent = titles[currentIndex]; // Set the title
-      genderInfo.textContent = (currentIndex === 0) ? "" : "남자 (왼쪽), 여자 (오른쪽)";
-      
+
       if (data.length > 0) {
         const table = document.createElement('table');
         const thead = document.createElement('thead');
@@ -89,6 +87,23 @@
           th.textContent = header;
           headerRow.appendChild(th);
         });
+
+        // Create gender row if applicable
+        if (currentIndex !== 0) {
+          const genderRow = document.createElement('tr');
+          const maleHeader = document.createElement('th');
+          maleHeader.colSpan = Math.ceil(headers.length / 2);
+          maleHeader.textContent = '남자';
+          genderRow.appendChild(maleHeader);
+
+          const femaleHeader = document.createElement('th');
+          femaleHeader.colSpan = Math.floor(headers.length / 2);
+          femaleHeader.textContent = '여자';
+          genderRow.appendChild(femaleHeader);
+
+          thead.appendChild(genderRow);
+        }
+
         thead.appendChild(headerRow);
 
         // Create table rows
@@ -121,7 +136,6 @@
   <h1>일산맥스체대입시 월말테스트</h1>
   <div class="container">
     <h2 id="eventTitle"></h2>
-    <p id="genderInfo"></p>
     <div id="output"></div>
   </div>
 </body>
