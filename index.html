@@ -69,16 +69,18 @@
       "배근력 TOP5"
     ];
 
-    function fetchData() {
-      const script = document.createElement('script');
-      script.src = 'https://script.google.com/macros/s/AKfycbywls4FX00gnksgdSrqJsWhQSaGox8Eq3HGmdi4nOHfAr4Y4XuKx0UbnjdMGBMNBl_P/exec?callback=updateData';
-      document.body.appendChild(script);
-    }
-
-    function updateData(fetchedData) {
-      data = fetchedData;
-      currentIndex = 0;
-      displayData();
+    async function fetchData() {
+      try {
+        const response = await fetch('https://supermax.kr/data');
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        data = await response.json();
+        currentIndex = 0;
+        displayData();
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
     }
 
     function displayData() {
