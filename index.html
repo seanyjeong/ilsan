@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <script>
+      let data = [];
+      let currentIndex = 0;
+
+      function fetchData() {
+        google.script.run.withSuccessHandler(updateData).getData();
+      }
+
+      function updateData(fetchedData) {
+        data = fetchedData;
+        currentIndex = 0;
+        displayData();
+      }
+
+      function displayData() {
+        const output = document.getElementById('output');
+        output.innerHTML = ''; // Clear previous content
+        if (data.length > 0) {
+          const currentData = data[currentIndex];
+          currentData.forEach(function(row) {
+            const div = document.createElement('div');
+            div.textContent = row.join(', ');
+            output.appendChild(div);
+          });
+          currentIndex = (currentIndex + 1) % data.length;
+        }
+      }
+
+      window.onload = function() {
+        fetchData(); // Initial data fetch
+        setInterval(fetchData, 60000); // Update data every 60 seconds
+        setInterval(displayData, 5000); // Change displayed data every 5 seconds
+      };
+    </script>
+  </head>
+  <body>
+    <h1>Google Sheets Data</h1>
+    <div id="output"></div>
+  </body>
+</html>
