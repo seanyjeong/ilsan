@@ -20,10 +20,14 @@
     h2 {
       color: #333;
     }
+    .tables {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+    }
     table {
-      width: 100%;
-      max-width: 1000px;
-      margin: 20px auto;
+      width: 45%;
+      margin: 10px;
       border-collapse: collapse;
       box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
       background-color: white;
@@ -31,13 +35,10 @@
     th, td {
       padding: 12px;
       border: 1px solid #ddd;
+      text-align: center;
     }
     th {
       background-color: #f4f4f4;
-      text-align: center;
-    }
-    td {
-      text-align: center;
     }
     tbody tr:nth-child(even) {
       background-color: #f9f9f9;
@@ -75,54 +76,60 @@
       eventTitle.textContent = titles[currentIndex]; // Set the title
 
       if (data.length > 0) {
-        const table = document.createElement('table');
-        const thead = document.createElement('thead');
-        const tbody = document.createElement('tbody');
+        const tables = document.createElement('div');
+        tables.className = 'tables';
 
-        // Create table headers
-        const headers = data[currentIndex][0];
-        const headerRow = document.createElement('tr');
-        headers.forEach(header => {
-          const th = document.createElement('th');
-          th.textContent = header;
-          headerRow.appendChild(th);
-        });
+        if (currentIndex === 0) {
+          // Single table for "총점 TOP5"
+          const table = createTable(data[currentIndex]);
+          tables.appendChild(table);
+        } else {
+          // Separate tables for 남자 and 여자
+          const maleData = data[currentIndex].map(row => row.slice(0, 7));
+          const femaleData = data[currentIndex].map(row => row.slice(7, 14));
 
-        // Create gender row if applicable
-        if (currentIndex !== 0) {
-          const genderRow = document.createElement('tr');
-          const maleHeader = document.createElement('th');
-          maleHeader.colSpan = Math.ceil(headers.length / 2);
-          maleHeader.textContent = '남자';
-          genderRow.appendChild(maleHeader);
+          const maleTable = createTable(maleData);
+          const femaleTable = createTable(femaleData);
 
-          const femaleHeader = document.createElement('th');
-          femaleHeader.colSpan = Math.floor(headers.length / 2);
-          femaleHeader.textContent = '여자';
-          genderRow.appendChild(femaleHeader);
-
-          thead.appendChild(genderRow);
+          tables.appendChild(maleTable);
+          tables.appendChild(femaleTable);
         }
 
-        thead.appendChild(headerRow);
-
-        // Create table rows
-        data[currentIndex].slice(1).forEach(row => {
-          const tr = document.createElement('tr');
-          row.forEach(cell => {
-            const td = document.createElement('td');
-            td.textContent = cell;
-            tr.appendChild(td);
-          });
-          tbody.appendChild(tr);
-        });
-
-        table.appendChild(thead);
-        table.appendChild(tbody);
-        output.appendChild(table);
-        
+        output.appendChild(tables);
         currentIndex = (currentIndex + 1) % data.length;
       }
+    }
+
+    function createTable(dataSet) {
+      const table = document.createElement('table');
+      const thead = document.createElement('thead');
+      const tbody = document.createElement('tbody');
+
+      // Create table headers
+      const headers = dataSet[0];
+      const headerRow = document.createElement('tr');
+      headers.forEach(header => {
+        const th = document.createElement('th');
+        th.textContent = header || '\u00A0'; // Non-breaking space if header is empty
+        headerRow.appendChild(th);
+      });
+      thead.appendChild(headerRow);
+
+      // Create table rows
+      dataSet.slice(1).forEach(row => {
+        const tr = document.createElement('tr');
+        row.forEach(cell => {
+          const td = document.createElement('td');
+          td.textContent = cell || '\u00A0'; // Non-breaking space if cell is empty
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+
+      table.appendChild(thead);
+      table.appendChild(tbody);
+
+      return table;
     }
 
     window.onload = function() {
