@@ -88,7 +88,7 @@
       output.innerHTML = ''; // 이전 데이터 초기화
       eventTitle.textContent = titles[currentIndex]; // 제목 설정
 
-      if (data.length > 0) {
+      if (data.length > 0 && currentIndex < data.length) {
         const tables = document.createElement('div');
         tables.className = 'tables';
 
@@ -107,8 +107,10 @@
         }
 
         output.appendChild(tables);
-        currentIndex = (currentIndex + 1) % data.length;  // ✅ 10m 왕복달리기까지 포함해서 순환
       }
+      
+      // 다음 인덱스로 이동 (titles 배열 길이 기준으로 순환)
+      currentIndex = (currentIndex + 1) % titles.length;
     }
     
     function createTable(dataSet) {
