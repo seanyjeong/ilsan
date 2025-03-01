@@ -65,6 +65,9 @@
     let data = [];
     let currentIndex = 0;
     let isDataLoaded = false;
+    let transitionTimer = null;
+    let fetchTimer = null;
+
     const titles = [
       "총점 TOP5",
       "남자/여자 총점 TOP5",
@@ -76,7 +79,12 @@
       "10m 왕복달리기 TOP5"
     ];
 
-    function fetchData() {
+    function showError(message) {
+      const output = document.getElementById('output');
+      output.innerHTML = `<div class="loading">${message}</div>`;
+    }
+
+    function fetchAndDisplay() {
       const script = document.createElement('script');
       script.src = 'https://script.google.com/macros/s/AKfycbx90C-IvD4S3ddERKDQm8vm2awQ9uym-wnUWf7054cLmhrw4-u-ox2PdRsjYndWEoh3SQ/exec?callback=updateData';
       
@@ -102,11 +110,6 @@
         console.error('잘못된 데이터 형식');
         showError('데이터 형식이 올바르지 않습니다.');
       }
-    }
-
-    function showError(message) {
-      const output = document.getElementById('output');
-      output.innerHTML = `<div class="loading">${message}</div>`;
     }
 
     function displayData() {
@@ -182,19 +185,20 @@
     }
 
     function startDataCycle() {
-      // 초기 데이터 로드
-      fetchData();
+      // 초기 데이터 로드 및 표시
+      fetchAndDisplay();
 
-      // 데이터 새로고침 (5초마다)
-      setInterval(fetchData, 5000);
-
-      // 화면 전환 (7초마다)
-      setInterval(() => {
-        if (isDataLoaded) {
-          displayData();
-        }
-      }, 7000);
+      // 주기적인 데이터 갱신 및 화면 전환
+      transitionTimer = setInterval(() => {
+        fetchAndDisplay();
+      }, 8000); // 8초마다 전체 사이클 실행
     }
+
+    // 페이지 언로드 시 타이머 정리
+    window.onbeforeunload = function() {
+      if (transitionTimer) clearInterval(transitionTimer);
+      if (fetchTimer) clearInterval(fetchTimer);
+    };
 
     window.onload = startDataCycle;
   </script>
