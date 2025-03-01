@@ -55,10 +55,16 @@
       max-width: 100%;
       height: auto;
     }
+    .loading {
+      font-size: 24px;
+      color: #666;
+      margin: 20px 0;
+    }
   </style>
   <script>
     let data = [];
     let currentIndex = 0;
+    let isDataLoaded = false;
     const titles = [
       "총점 TOP5",
       "남자/여자 총점 TOP5",
@@ -67,53 +73,84 @@
       "20m 왕복달리기 TOP5",
       "메디신볼 던지기 TOP5",
       "배근력 TOP5",
-      "10m 왕복달리기 TOP5"  // ✅ 추가된 부분
+      "10m 왕복달리기 TOP5"
     ];
-    
+
     function fetchData() {
       const script = document.createElement('script');
       script.src = 'https://script.google.com/macros/s/AKfycbx90C-IvD4S3ddERKDQm8vm2awQ9uym-wnUWf7054cLmhrw4-u-ox2PdRsjYndWEoh3SQ/exec?callback=updateData';
+      
+      script.onload = () => {
+        document.body.removeChild(script);
+      };
+      
+      script.onerror = () => {
+        document.body.removeChild(script);
+        console.error('데이터 로드 실패');
+        showError('데이터를 불러오는데 실패했습니다.');
+      };
+      
       document.body.appendChild(script);
     }
-    
+
     function updateData(fetchedData) {
-      data = fetchedData;
-      currentIndex = 0;
-      displayData();
+      if (fetchedData && Array.isArray(fetchedData)) {
+        data = fetchedData;
+        isDataLoaded = true;
+        displayData();
+      } else {
+        console.error('잘못된 데이터 형식');
+        showError('데이터 형식이 올바르지 않습니다.');
+      }
     }
-    
+
+    function showError(message) {
+      const output = document.getElementById('output');
+      output.innerHTML = `<div class="loading">${message}</div>`;
+    }
+
     function displayData() {
       const output = document.getElementById('output');
       const eventTitle = document.getElementById('eventTitle');
-      output.innerHTML = ''; // 이전 데이터 초기화
-      eventTitle.textContent = titles[currentIndex]; // 제목 설정
 
-      if (data.length > 0 && currentIndex < data.length) {
-        const tables = document.createElement('div');
-        tables.className = 'tables';
+      if (!isDataLoaded || !data[currentIndex]) {
+        output.innerHTML = '<div class="loading">데이터를 불러오는 중...</div>';
+        return;
+      }
 
-        if (currentIndex === 0) {
-          // ✅ "총점 TOP5"는 하나의 테이블만 표시
-          const table = createTable(data[currentIndex]);
-          tables.appendChild(table);
-        } else {
-          // ✅ 남자/여자 데이터가 분리된 경우
-          const maleData = data[currentIndex].map(row => row.slice(0, 7));
-          const femaleData = data[currentIndex].map(row => row.slice(7, 14));
+      output.innerHTML = '';
+      eventTitle.textContent = titles[currentIndex];
+
+      const tables = document.createElement('div');
+      tables.className = 'tables';
+
+      if (currentIndex === 0) {
+        const table = createTable(data[currentIndex]);
+        tables.appendChild(table);
+      } else {
+        const maleData = data[currentIndex].map(row => row.slice(0, 7));
+        const femaleData = data[currentIndex].map(row => row.slice(7, 14));
+        
+        if (maleData.length > 0) {
           const maleTable = createTable(maleData);
-          const femaleTable = createTable(femaleData);
           tables.appendChild(maleTable);
+        }
+        
+        if (femaleData.length > 0) {
+          const femaleTable = createTable(femaleData);
           tables.appendChild(femaleTable);
         }
-
-        output.appendChild(tables);
       }
+
+      output.appendChild(tables);
       
-      // 다음 인덱스로 이동 (titles 배열 길이 기준으로 순환)
+      // 다음 인덱스로 이동
       currentIndex = (currentIndex + 1) % titles.length;
     }
-    
+
     function createTable(dataSet) {
+      if (!dataSet || !dataSet.length) return null;
+
       const table = document.createElement('table');
       const thead = document.createElement('thead');
       const tbody = document.createElement('tbody');
@@ -123,7 +160,7 @@
       const headerRow = document.createElement('tr');
       headers.forEach(header => {
         const th = document.createElement('th');
-        th.textContent = header || '\u00A0'; // 빈값 처리
+        th.textContent = header || '\u00A0';
         headerRow.appendChild(th);
       });
       thead.appendChild(headerRow);
@@ -144,11 +181,22 @@
       return table;
     }
 
-    window.onload = function() {
+    function startDataCycle() {
+      // 초기 데이터 로드
       fetchData();
-      setInterval(fetchData, 5000); // 5초마다 데이터 업데이트
-      setInterval(displayData, 10000); // 10초마다 데이터 전환
-    };
+
+      // 데이터 새로고침 (5초마다)
+      setInterval(fetchData, 5000);
+
+      // 화면 전환 (7초마다)
+      setInterval(() => {
+        if (isDataLoaded) {
+          displayData();
+        }
+      }, 7000);
+    }
+
+    window.onload = startDataCycle;
   </script>
 </head>
 <body>
