@@ -3,13 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>맥스의류주문</title>
+    <title>일산맥스 의류주문</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/light.min.css">
     <style>
+        body {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
         .product {
             text-align: center;
             margin-bottom: 20px;
         }
+
         .product img {
             width: 100px;
             height: 100px;
@@ -18,9 +26,11 @@
             border-radius: 5px;
             transition: transform 0.2s;
         }
+
         .product img:hover {
             transform: scale(1.1);
         }
+
         .overlay {
             display: none;
             position: fixed;
@@ -32,14 +42,47 @@
             justify-content: center;
             align-items: center;
         }
+
         .overlay img {
             max-width: 90%;
             max-height: 90%;
         }
-        input[type="tel"] {
+
+        input[type="tel"], input[type="text"] {
             width: 200px;
             padding: 8px;
-            margin: 5px 0;
+            margin: 5px auto;
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0;
+            text-align: center;
+        }
+
+        #cart {
+            list-style: none;
+            padding: 0;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        #cart li {
+            margin: 10px 0;
+        }
+
+        h1, h2 {
+            text-align: center;
+        }
+
+        button {
+            margin: 5px;
+        }
+
+        select {
+            text-align: center;
+            margin: 5px auto;
         }
     </style>
 </head>
