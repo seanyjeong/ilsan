@@ -59,7 +59,7 @@
             { id: 1, name: "맥스하라노랑", price: 13000, img: "https://github.com/seanyjeong/newilsan/blob/main/%EB%A7%A5%EC%8A%A4%ED%95%98%EB%9D%BC%EB%85%B8%EB%9E%91.jpeg?raw=true" },
             { id: 2, name: "TTM 핑크반팔", price: 13000, img: "https://github.com/seanyjeong/newilsan/blob/main/%ED%8B%B0%ED%8B%B0%EC%97%A0.jpeg?raw=true" },
             { id: 3, name: "흰색맥스반팔", price: 12000, img: "https://github.com/seanyjeong/newilsan/blob/main/%ED%9D%B0%EC%83%89%EB%A7%A5%EC%8A%A4%ED%8B%B0.jpeg?raw=true" },
-             { id: 4, name: "아카데미반팔", price: 14000, img: "https://github.com/seanyjeong/newilsan/blob/main/%EC%95%84%EC%B9%B4%EB%8D%B0%EB%AF%B8%EB%B0%98%ED%8C%94.jpeg?raw=true" },
+            { id: 4, name: "아카데미반팔", price: 14000, img: "https://github.com/seanyjeong/newilsan/blob/main/%EC%95%84%EC%B9%B4%EB%8D%B0%EB%AF%B8%EB%B0%98%ED%8C%94.jpeg?raw=true" },
             { id: 5, name: "곤색반팔", price: 12000, img: "https://github.com/seanyjeong/newilsan/blob/main/%EB%B0%98%ED%8C%94%EA%B3%A4%EC%83%89.jpeg?raw=true" },
             { id: 6, name: "맨투맨검정", price: 27000, img: "https://github.com/seanyjeong/newilsan/blob/main/%EB%A7%A8%ED%88%AC%EB%A7%A8%EA%B2%80%EC%A0%95.jpeg?raw=true" },
             { id: 7, name: "맨투맨회색", price: 27000, img: "https://github.com/seanyjeong/newilsan/blob/main/%EB%A7%A8%ED%88%AC%EB%A7%A8%ED%9A%8C%EC%83%89.jpeg?raw=true" },
@@ -136,16 +136,31 @@
                 return;
             }
 
+            // 총 금액 계산
+            const totalAmount = cart.reduce((sum, item) => sum + item.price, 0);
+            // 첫 번째 상품 이름 + 추가 상품 개수 표시
+            const orderSummary = cart.length > 1 
+                ? `${cart[0].name} 외 ${cart.length - 1}개`
+                : cart[0].name;
+
             fetch("https://script.google.com/macros/s/AKfycbxYYr8WU2Fb55E0mh-v0AzewQJNdTonwWxJim8MbQlRbXIWCaW0mNYYM4umlk75gms/exec", {
                 method: "POST",
                 mode: "no-cors",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ customerName, orders: cart })
+                body: JSON.stringify({ 
+                    customerName, 
+                    orders: cart,
+                    totalAmount,
+                    orderSummary
+                })
             });
 
             alert("✅ 주문이 접수되었습니다!");
+            // 장바구니 초기화
             cart = [];
             updateCart();
+            // 주문자 이름 초기화
+            document.getElementById("customerName").value = "";
         }
 
         renderProducts();
