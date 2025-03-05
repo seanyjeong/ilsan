@@ -36,12 +36,18 @@
             max-width: 90%;
             max-height: 90%;
         }
+        input[type="tel"] {
+            width: 200px;
+            padding: 8px;
+            margin: 5px 0;
+        }
     </style>
 </head>
 <body>
     <h1>👕 맥스 의류 주문</h1>
 
     <label>주문자 이름: <input type="text" id="customerName"></label>
+    <label>전화번호: <input type="tel" id="phoneNumber" placeholder="'-' 없이 숫자만 입력 (예: 01012345678)" maxlength="11"></label>
 
     <h2>📦 상품 목록</h2>
     <div id="products"></div>
@@ -73,6 +79,11 @@
 
         const sizes = ["S", "M", "L", "XL", "2XL", "3XL"];
         let cart = [];
+
+        // 전화번호 입력 필드에 숫자만 입력되도록 제한
+        document.getElementById('phoneNumber').addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
 
         function renderProducts() {
             const container = document.getElementById("products");
@@ -108,7 +119,6 @@
             const size = document.getElementById(`size-${product.id}`).value;
             cart.push({ name: product.name, size, price: product.price });
             updateCart();
-            // 장바구니 담김 알림 추가
             alert(`✅ ${product.name} (${size}) 상품이 장바구니에 담겼습니다!`);
         }
 
@@ -128,8 +138,15 @@
 
         function submitOrder() {
             const customerName = document.getElementById("customerName").value.trim();
+            const phoneNumber = document.getElementById("phoneNumber").value.trim();
+            
             if (!customerName) {
                 alert("주문자 이름을 입력하세요!");
+                return;
+            }
+
+            if (!phoneNumber || phoneNumber.length !== 11) {
+                alert("올바른 전화번호를 입력하세요! (예: 01012345678)");
                 return;
             }
 
@@ -138,9 +155,7 @@
                 return;
             }
 
-            // 총 금액 계산
             const totalAmount = cart.reduce((sum, item) => sum + item.price, 0);
-            // 첫 번째 상품 이름 + 추가 상품 개수 표시
             const orderSummary = cart.length > 1 
                 ? `${cart[0].name} 외 ${cart.length - 1}개`
                 : cart[0].name;
@@ -151,6 +166,7 @@
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ 
                     customerName, 
+                    phoneNumber,
                     orders: cart,
                     totalAmount,
                     orderSummary
@@ -158,11 +174,10 @@
             });
 
             alert("✅ 주문이 접수되었습니다!");
-            // 장바구니 초기화
             cart = [];
             updateCart();
-            // 주문자 이름 초기화
             document.getElementById("customerName").value = "";
+            document.getElementById("phoneNumber").value = "";
         }
 
         renderProducts();
