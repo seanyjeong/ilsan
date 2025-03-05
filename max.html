@@ -108,6 +108,8 @@
             const size = document.getElementById(`size-${product.id}`).value;
             cart.push({ name: product.name, size, price: product.price });
             updateCart();
+            // 장바구니 담김 알림 추가
+            alert(`✅ ${product.name} (${size}) 상품이 장바구니에 담겼습니다!`);
         }
 
         function updateCart() {
