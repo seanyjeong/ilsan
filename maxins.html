@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>실기 기록 피드</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
+    <style>
+        body {
+            max-width: 500px;
+            margin: auto;
+            background: #f5f5f5;
+        }
+        .feed {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .profile img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+        .video-container, .image-container {
+            width: 100%;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        video, img {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h2>실기 기록 피드</h2>
+    <div class="feed">
+        <script>
+            const profiles = [
+                {name: "홍길동", profile: "https://via.placeholder.com/40", record: "제멀 기록: 2.85m", media: "video", mediaUrl: "https://www.w3schools.com/html/mov_bbb.mp4", date: "2025-03-19"},
+                {name: "김철수", profile: "https://via.placeholder.com/40", record: "메디신볼 던지기 기록: 8.5m", media: "image", mediaUrl: "https://via.placeholder.com/300x200", date: "2025-03-18"},
+                {name: "이영희", profile: "https://via.placeholder.com/40", record: "100m 달리기 기록: 12.5초", media: "video", mediaUrl: "https://www.w3schools.com/html/mov_bbb.mp4", date: "2025-03-17"},
+                {name: "박민수", profile: "https://via.placeholder.com/40", record: "윗몸 일으키기 50회", media: "image", mediaUrl: "https://via.placeholder.com/300x200", date: "2025-03-16"},
+                {name: "최지현", profile: "https://via.placeholder.com/40", record: "턱걸이 15회", media: "video", mediaUrl: "https://www.w3schools.com/html/mov_bbb.mp4", date: "2025-03-15"},
+                {name: "정우성", profile: "https://via.placeholder.com/40", record: "제자리 멀리뛰기 2.9m", media: "image", mediaUrl: "https://via.placeholder.com/300x200", date: "2025-03-14"},
+                {name: "장미란", profile: "https://via.placeholder.com/40", record: "팔굽혀펴기 30회", media: "video", mediaUrl: "https://www.w3schools.com/html/mov_bbb.mp4", date: "2025-03-13"},
+                {name: "손흥민", profile: "https://via.placeholder.com/40", record: "축구 드리블 기록 10.2초", media: "image", mediaUrl: "https://via.placeholder.com/300x200", date: "2025-03-12"},
+                {name: "김연아", profile: "https://via.placeholder.com/40", record: "스케이트 300m 기록: 28.5초", media: "video", mediaUrl: "https://www.w3schools.com/html/mov_bbb.mp4", date: "2025-03-11"},
+                {name: "유재석", profile: "https://via.placeholder.com/40", record: "농구 자유투 성공률 80%", media: "image", mediaUrl: "https://via.placeholder.com/300x200", date: "2025-03-10"}
+            ];
+
+            profiles.forEach(p => {
+                document.write(`
+                    <div class="card">
+                        <div class="profile">
+                            <img src="${p.profile}" alt="프로필">
+                            <span>${p.name}</span>
+                        </div>
+                        <p>${p.record}</p>
+                        <div class="${p.media}-container">
+                            ${p.media === 'video' ? `<video controls><source src="${p.mediaUrl}" type="video/mp4"></video>` : `<img src="${p.mediaUrl}" alt="기록 사진">`}
+                        </div>
+                        <small>${p.date}</small>
+                    </div>
+                `);
+            });
+        </script>
+    </div>
+</body>
+</html>
