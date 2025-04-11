@@ -3,38 +3,42 @@
 <head>
   <title>일산맥스체대입시 4월 실기테스트</title>
   <style>
-body {
-  font-family: Arial, sans-serif;
-  text-align: center;
-  margin: 0;
-  padding: 0;
-  background-color: #fff1f5; /* ← 여기 핑크빛으로 변경 */
-}
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      background-color: #fff1f5;
+    }
 
-.footer-message {
-  font-size: 20px;
-  color: #cc3366;
-  margin: 40px 0 20px;
-  font-weight: bold;
-}
+    .footer-message {
+      font-size: 20px;
+      color: #cc3366;
+      margin: 40px 0 20px;
+      font-weight: bold;
+    }
 
     .container {
       margin: 20px auto;
       width: 90%;
     }
+
     h1 {
       margin-top: 40px;
       font-size: 50px;
     }
+
     h2 {
       color: #333;
       font-size: 35px;
     }
+
     .tables {
       display: flex;
       justify-content: space-around;
       flex-wrap: wrap;
     }
+
     table {
       width: 45%;
       margin: 10px;
@@ -42,69 +46,74 @@ body {
       box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
       background-color: white;
     }
+
     th, td {
       padding: 12px;
       border: 1px solid #ddd;
       text-align: center;
       font-size: 25px;
     }
+
     th {
       background-color: #f4f4f4;
     }
+
     tbody tr:nth-child(even) {
       background-color: #f9f9f9;
     }
+
     .image-container {
       margin: 20px auto;
       width: 60%;
     }
+
     .image-container img {
       width: 100%;
       max-width: 100%;
       height: auto;
     }
+
     .loading {
       font-size: 24px;
       color: #666;
       margin: 20px 0;
     }
+
     .petal {
-  position: fixed;
-  top: -10px;
-  z-index: 9999;
-  pointer-events: none;
-  width: 30px;
-  height: 30px;
-  background-image: url("https://github.com/seanyjeong/ilsan/blob/main/sakura.png?raw=true");
-  background-size: contain;
-  background-repeat: no-repeat;
-  animation-name: fall;
-  animation-timing-function: linear;
+      position: fixed;
+      top: -10px;
+      z-index: 9999;
+      pointer-events: none;
+      width: 30px;
+      height: 30px;
+      background-image: url("https://github.com/seanyjeong/ilsan/blob/main/sakura.png?raw=true");
+      background-size: contain;
+      background-repeat: no-repeat;
+      animation-name: fall;
+      animation-timing-function: linear;
+    }
 
-}
-
-@keyframes fall {
-  0% {
-    transform: translateX(0) translateY(0) rotate(0deg);
-    opacity: 1;
-  }
-  25% {
-    transform: translateX(-30px) translateY(25vh) rotate(60deg);
-  }
-  50% {
-    transform: translateX(-60px) translateY(50vh) rotate(120deg);
-  }
-  75% {
-    transform: translateX(-90px) translateY(75vh) rotate(180deg);
-  }
-  100% {
-    transform: translateX(-120px) translateY(100vh) rotate(240deg);
-    opacity: 0;
-  }
-}
-
-
+    @keyframes fall {
+      0% {
+        transform: translateX(0) translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+      25% {
+        transform: translateX(-30px) translateY(25vh) rotate(60deg);
+      }
+      50% {
+        transform: translateX(-60px) translateY(50vh) rotate(120deg);
+      }
+      75% {
+        transform: translateX(-90px) translateY(75vh) rotate(180deg);
+      }
+      100% {
+        transform: translateX(-120px) translateY(100vh) rotate(240deg);
+        opacity: 0;
+      }
+    }
   </style>
+
   <script>
     let data = [];
     let currentIndex = 0;
@@ -119,8 +128,7 @@ body {
       "윗몸일으키기 TOP5",
       "20m 왕복달리기 TOP5",
       "메디신볼 던지기 TOP5",
-      "배근력 TOP5",
-      "10m 왕복달리기 TOP5"
+      "배근력 TOP5"
     ];
 
     function showError(message) {
@@ -131,23 +139,23 @@ body {
     function fetchAndDisplay() {
       const script = document.createElement('script');
       script.src = 'https://script.google.com/macros/s/AKfycbx90C-IvD4S3ddERKDQm8vm2awQ9uym-wnUWf7054cLmhrw4-u-ox2PdRsjYndWEoh3SQ/exec?callback=updateData';
-      
+
       script.onload = () => {
         document.body.removeChild(script);
       };
-      
+
       script.onerror = () => {
         document.body.removeChild(script);
         console.error('데이터 로드 실패');
         showError('데이터를 불러오는데 실패했습니다.');
       };
-      
+
       document.body.appendChild(script);
     }
 
     function updateData(fetchedData) {
       if (fetchedData && Array.isArray(fetchedData)) {
-        data = fetchedData;
+        data = fetchedData.slice(0, titles.length);
         isDataLoaded = true;
         displayData();
       } else {
@@ -177,12 +185,12 @@ body {
       } else {
         const maleData = data[currentIndex].map(row => row.slice(0, 7));
         const femaleData = data[currentIndex].map(row => row.slice(7, 14));
-        
+
         if (maleData.length > 0) {
           const maleTable = createTable(maleData);
           tables.appendChild(maleTable);
         }
-        
+
         if (femaleData.length > 0) {
           const femaleTable = createTable(femaleData);
           tables.appendChild(femaleTable);
@@ -190,33 +198,8 @@ body {
       }
 
       output.appendChild(tables);
-      
-      // 다음 인덱스로 이동
       currentIndex = (currentIndex + 1) % titles.length;
     }
-
-    function createPetal() {
-    const petal = document.createElement('div');
-    petal.classList.add('petal');
-
-    // 무작위 위치와 크기, 속도 설정
-    const size = Math.random() * 15 + 15;
-    petal.style.left = Math.random() * window.innerWidth + 'px';
-    petal.style.animationDuration = (Math.random() * 5 + 5) + 's';
-    petal.style.opacity = Math.random();
-    petal.style.width = size + 'px';
-    petal.style.height = size + 'px';
-
-    document.body.appendChild(petal);
-
-    // 일정 시간 뒤 제거
-    setTimeout(() => {
-      petal.remove();
-    }, 10000);
-  }
-
-  // 벚꽃 생성 주기
-  setInterval(createPetal, 300);
 
     function createTable(dataSet) {
       if (!dataSet || !dataSet.length) return null;
@@ -225,7 +208,6 @@ body {
       const thead = document.createElement('thead');
       const tbody = document.createElement('tbody');
 
-      // 테이블 헤더 생성
       const headers = dataSet[0];
       const headerRow = document.createElement('tr');
       headers.forEach(header => {
@@ -235,7 +217,6 @@ body {
       });
       thead.appendChild(headerRow);
 
-      // 테이블 내용 생성
       dataSet.slice(1).forEach(row => {
         const tr = document.createElement('tr');
         row.forEach(cell => {
@@ -251,44 +232,52 @@ body {
       return table;
     }
 
-    function startDataCycle() {
-      // 초기 데이터 로드 및 표시
-      fetchAndDisplay();
+    function createPetal() {
+      const petal = document.createElement('div');
+      petal.classList.add('petal');
 
-      // 주기적인 데이터 갱신 및 화면 전환
-      transitionTimer = setInterval(() => {
-        fetchAndDisplay();
-      }, 8000); // 8초마다 전체 사이클 실행
+      const size = Math.random() * 15 + 15;
+      petal.style.left = Math.random() * window.innerWidth + 'px';
+      petal.style.animationDuration = (Math.random() * 5 + 5) + 's';
+      petal.style.opacity = Math.random();
+      petal.style.width = size + 'px';
+      petal.style.height = size + 'px';
+
+      document.body.appendChild(petal);
+
+      setTimeout(() => {
+        petal.remove();
+      }, 10000);
     }
 
-    // 페이지 언로드 시 타이머 정리
+    setInterval(createPetal, 300);
+
+    function startDataCycle() {
+      fetchAndDisplay();
+      transitionTimer = setInterval(() => {
+        fetchAndDisplay();
+      }, 8000);
+    }
+
     window.onbeforeunload = function() {
       if (transitionTimer) clearInterval(transitionTimer);
       if (fetchTimer) clearInterval(fetchTimer);
     };
 
     window.onload = startDataCycle;
-
-
   </script>
 </head>
 <body>
-
-  
   <h1>일산맥스체대입시 4월테스트</h1>
   <div class="container">
-    
     <h2 id="eventTitle"></h2>
     <div id="output"></div>
     <div class="footer-message">
       지금 이 순간, 우리는 피어난다. 🌸 우리는 맥스다.
     </div>
     <div class="image-container">
-      
       <img src="https://github.com/seanyjeong/supermax/blob/main/maxlogo.png?raw=true" alt="Maxhara Image">
-      
     </div>
-    
   </div>
 </body>
 </html>
